@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Desy & Bayu</title>
+    <style>
+        html, body {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            overflow: hidden; background-color: #0d1117; overscroll-behavior-y: none;
+        }
+        iframe { border: none; width: 100%; height: 100%; display: block; }
+    </style>
+</head>
+<body>
+    <!-- Iframe dengan ID khusus -->
+    <iframe id="undangan-frame" allow="autoplay; encrypted-media; clipboard-read; clipboard-write; fullscreen"></iframe>
+    
+    <script>
+        // Link Apps Script Asli Bos
+        var scriptUrl = "https://script.google.com/macros/s/AKfycbz8Tl-mtfH4ZTvwpcHaeKyKaDE4gnFCpz3k59YrgN1wvwPDab12m-EdiGz6Za2StaVs/exec";
+        
+        // Ambil parameter nama dari URL custom domain (desy-bayu.indopz.my.id)
+        var params = window.location.search; // Mengambil ?to=Nama
+        var hash = window.location.hash;     // Mengambil /#Nama
+        
+        var finalUrl = scriptUrl;
+        
+        // Logika Penerus (Forwarder) ke Google Apps Script
+        if (params) {
+            finalUrl += params;
+        } else if (hash) {
+            // Ubah format /#Budi-Santoso menjadi parameter ?to=Budi-Santoso agar terbaca sistem
+            var namaTamu = hash.substring(1);
+            finalUrl += "?to=" + namaTamu;
+        }
+        
+        // Terapkan URL gabungan ke dalam Iframe
+        document.getElementById("undangan-frame").src = finalUrl;
+    </script>
+</body>
+</html>
