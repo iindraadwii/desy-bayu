@@ -3,6 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0d1117">
+    
     <title>Desy & Bayu</title>
     <style>
         html, body {
@@ -11,14 +17,38 @@
             overflow: hidden; background-color: #0d1117; overscroll-behavior-y: none;
         }
         iframe { border: none; width: 100%; height: 100%; display: block; }
+        
+        /* Layer transparan penangkap sentuhan pertama tamu */
+        #fs-overlay {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 9999; background: transparent; cursor: pointer;
+        }
     </style>
 </head>
 <body>
-    <!-- Iframe dengan ID khusus -->
+    
+    <div id="fs-overlay"></div>
+
     <iframe id="undangan-frame" allow="autoplay; encrypted-media; clipboard-read; clipboard-write; fullscreen"></iframe>
     
     <script>
-        // Link Apps Script Asli Bos
+        // 1. LOGIKA FULL SCREEN (Browser mewajibkan sentuhan pertama)
+        document.getElementById("fs-overlay").addEventListener("click", function() {
+            var doc = document.documentElement;
+            if (doc.requestFullscreen) { 
+                doc.requestFullscreen(); 
+            } else if (doc.webkitRequestFullscreen) { 
+                doc.webkitRequestFullscreen(); // Untuk Safari/iOS
+            } else if (doc.msRequestFullscreen) { 
+                doc.msRequestFullscreen(); // Untuk IE
+            }
+            
+            // Setelah disentuh 1x dan fullscreen aktif, hancurkan layer ini 
+            // agar tamu bisa menekan tombol Buka Undangan di dalam Iframe
+            this.style.display = "none";
+        });
+
+        // 2. LOGIKA FORWARDER ASLI ANDA
         var scriptUrl = "https://script.google.com/macros/s/AKfycbz8Tl-mtfH4ZTvwpcHaeKyKaDE4gnFCpz3k59YrgN1wvwPDab12m-EdiGz6Za2StaVs/exec";
         
         // Ambil parameter nama dari URL custom domain (desy-bayu.indopz.my.id)
@@ -41,3 +71,15 @@
     </script>
 </body>
 </html>
+```
+
+***
+
+### 🚀 IndoBOT Idea
+* **Logic & Functionality:** Karena ada layer `#fs-overlay` di GitHub, tamu Anda harus mengetuk layar 2 kali (ketukan pertama untuk memecahkan layer pembatas *Fullscreen*, ketukan kedua untuk mengklik tombol "Buka Undangan" di undangan aslinya).
+* **UX Performance (Sangat Disarankan):** Jika Anda tidak ingin tamu merasa "kok tombol Buka Undangannya harus ditekan 2 kali baru mau terbuka?", saran saya **hapus `#fs-overlay` di file GitHub ini**, dan pindahkan kode *Fullscreen* langsung ke dalam **Google Apps Script** Anda!
+* Anda hanya perlu menambahkan 3 baris kode ke dalam skrip `Index.html` (Apps Script), tepat di dalam fungsi `function bukaUndangan() { ... }`:
+  ```javascript
+  let doc = document.documentElement;
+  if (doc.requestFullscreen) doc.requestFullscreen();
+  else if (doc.webkitRequestFullscreen) doc.webkitRequestFullscreen();
