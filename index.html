@@ -1,43 +1,66 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Desy & Bayu</title>
-    <style>
-        html, body {
-            margin: 0; padding: 0; width: 100%; height: 100%;
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            overflow: hidden; background-color: #0d1117; overscroll-behavior-y: none;
-        }
-        iframe { border: none; width: 100%; height: 100%; display: block; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  
+  <title>Desy & Bayu</title>
+  
+  <style>
+    /* KUNCI MUTLAK PADA PEMBUNGKUS LUAR */
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      position: fixed; /* Ini adalah kunci utamanya agar tidak terdorong address bar HP */
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      overflow: hidden; /* Biar ga ada scrollbar */
+      background-color: #0d1117; /* Warna background gelap biar pas loading ga silau */
+      overscroll-behavior-y: none; /* Mencegah layar HP tertarik-tarik (pull-to-refresh) */
+    }
+
+    iframe {
+      border: none;
+      width: 100%; /* Menggunakan % mengikuti body, jangan gunakan vw */
+      height: 100%; /* Menggunakan % mengikuti body, jangan gunakan vh */
+      display: block;
+    }
+  </style>
 </head>
 <body>
-    <!-- Iframe dengan ID khusus -->
-    <iframe id="undangan-frame" allow="autoplay; encrypted-media; clipboard-read; clipboard-write; fullscreen"></iframe>
-    
-    <script>
-        // Link Apps Script Asli Bos
-        <iframe src="https://script.google.com/macros/s/AKfycbyCpCCBHkQ3pPbcpGLTX5AvDd2js2e66_IjCmSnnKXh8jXruvuTmRJOVWfNdJwal6NK/exec" allow="autoplay; encrypted-media; clipboard-read; clipboard-write; fullscreen"></iframe>
+
+  <iframe src="https://script.google.com/macros/s/AKfycbxBDmhmdFLx8zKhcAcpKY1CHLYHINfVbMuEmfXFLL4VUMRIpIGpmdnt44VFQeYSNhC39A/exec" allow="autoplay; encrypted-media; clipboard-read; clipboard-write; fullscreen"></iframe>
+
+  <!-- [INDOBOT FIX] SCRIPT PENERUS NAMA TAMU KE DALAM IFRAME -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      // 1. Ambil elemen iframe
+      const iframe = document.querySelector("iframe");
+      const currentSrc = iframe.src;
+      
+      // 2. Baca URL yang diketik pengunjung (misal: /#Budi-Santoso atau /?to=Budi)
+      const hash = window.location.hash;
+      const search = window.location.search;
+
+      // 3. Masukkan ke dalam iFrame
+      if (hash) {
+        // Ambil nama tanpa tanda pagar '#'
+        const guestName = hash.substring(1); 
         
-        // Ambil parameter nama dari URL custom domain (desy-bayu.indopz.my.id)
-        var params = window.location.search; // Mengambil ?to=Nama
-        var hash = window.location.hash;     // Mengambil /#Nama
+        // [TRIK JITU]: Kita convert '#' menjadi '?to=' saat dilempar ke iFrame
+        // Ini memastikan Google Apps Script tidak menghilangkan datanya saat proses muat ulang
+        iframe.src = currentSrc + "?to=" + guestName;
         
-        var finalUrl = scriptUrl;
-        
-        // Logika Penerus (Forwarder) ke Google Apps Script
-        if (params) {
-            finalUrl += params;
-        } else if (hash) {
-            // Ubah format /#Budi-Santoso menjadi parameter ?to=Budi-Santoso agar terbaca sistem
-            var namaTamu = hash.substring(1);
-            finalUrl += "?to=" + namaTamu;
-        }
-        
-        // Terapkan URL gabungan ke dalam Iframe
-        document.getElementById("undangan-frame").src = finalUrl;
-    </script>
+      } else if (search) {
+        // Jika pengunjung menggunakan format /?to=Budi-Santoso
+        iframe.src = currentSrc + search;
+      }
+    });
+  </script>
+
 </body>
 </html>
